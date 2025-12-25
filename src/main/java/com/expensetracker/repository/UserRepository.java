@@ -1,0 +1,24 @@
+package com.expensetracker.repository;
+
+import com.expensetracker.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+/**
+ * repository для работы с пользавателями
+ */
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+    
+    /**
+     * найти пользователя по email
+     */
+    Optional<User> findByEmail(String email);
+    
+    /**
+     * проверить существование пользователя по email
+     */
+    boolean existsByEmail(String email);
+}
