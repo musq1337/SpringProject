@@ -76,7 +76,7 @@ export default function DashboardPage() {
 
   const chartData = dashboard?.categoryExpenses?.map((item) => ({
     name: item.categoryName,
-    value: item.totalAmount,
+    value: item.amount,
   })) || [];
 
   const COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#10b981'];

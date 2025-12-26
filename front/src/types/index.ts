@@ -131,10 +131,10 @@ export interface DashboardData {
 }
 
 export interface CategoryExpense {
-  categoryId: number;
+  categoryId?: number;
   categoryName: string;
-  totalAmount: number;
-  color?: string;
+  categoryColor?: string;
+  amount: number;
 }
 
 export interface BalanceTrend {
