@@ -1,6 +1,6 @@
 # Expense Tracker - Трекер Расходов
 
-Веб-приложение для учета личных финансов на Java Spring Boot.
+Веб-приложение для учета личных финансов на Java Spring Boot. Проектная работа студента Saduakhas Muslim по дисциплине "Разработка Web приложений на Java Spring".
 
 ## Технологии
 
@@ -75,16 +75,16 @@ src/
 ### Текущий статус
 
 - [x] Инициализация проекта
-- [ ] Entities и Repositories
-- [ ] Security + JWT
-- [ ] REST API
+- [x] Entities и Repositories
+- [x] Security + JWT
+- [x] REST API
 - [ ] Frontend
 - [ ] Тестирование
 
 ## Автор
 
-Проектная работа по дисциплине "Разработка Web приложений на Java Spring"
+Проектная работа по дисциплине "Разработка Web приложений на Java Spring" cтудента Muslim Saduakhas
 
 ## Дата
 
-Декабрь 2025 - Март 2026
+Декабрь 2025 
