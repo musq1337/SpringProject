@@ -30,5 +30,5 @@ public class RegisterRequest {
     @NotBlank(message = "фамилия обязательна")
     private String lastName;
     
-    private Currency defaultCurrency = Currency.RUB;
+    private Currency defaultCurrency = Currency.KZT;
 }

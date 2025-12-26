@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -17,39 +18,19 @@ import java.util.List;
 @Builder
 public class DashboardResponse {
     
-    private BigDecimal totalBalance;
+    private BigDecimal totalIncome;
     
-    private BigDecimal currentMonthIncome;
+    private BigDecimal totalExpense;
     
-    private BigDecimal currentMonthExpense;
+    private BigDecimal balance;
     
-    private BigDecimal currentMonthBalance;
+    private List<CategoryExpense> categoryExpenses;
     
-    private Double incomeChangePercent;
-    
-    private Double expenseChangePercent;
-    
-    private CategorySummary topExpenseCategory;
-    
-    private BigDecimal averageDailyExpense;
-    
-    private Long transactionCount;
-    
-    private List<CategoryExpense> expensesByCategory;
-    
-    private List<MonthSummary> incomeVsExpenseByMonth;
+    private List<MonthSummary> monthSummaries;
     
     private List<BalancePoint> balanceTrend;
     
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class CategorySummary {
-        private String name;
-        private BigDecimal amount;
-        private Double percent;
-    }
+    private String period;
     
     @Data
     @NoArgsConstructor
@@ -57,9 +38,8 @@ public class DashboardResponse {
     @Builder
     public static class CategoryExpense {
         private String categoryName;
+        private String categoryColor;
         private BigDecimal amount;
-        private Double percent;
-        private String color;
     }
     
     @Data
@@ -68,8 +48,10 @@ public class DashboardResponse {
     @Builder
     public static class MonthSummary {
         private String month;
+        private Integer year;
         private BigDecimal income;
         private BigDecimal expense;
+        private BigDecimal balance;
     }
     
     @Data
@@ -77,7 +59,7 @@ public class DashboardResponse {
     @AllArgsConstructor
     @Builder
     public static class BalancePoint {
-        private String date;
+        private LocalDate date;
         private BigDecimal balance;
     }
 }

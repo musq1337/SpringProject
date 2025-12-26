@@ -5,9 +5,9 @@ package com.expensetracker.enums;
  */
 public enum Currency {
     /**
-     * росийский рубль
+     * казахстанский тенге
      */
-    RUB("₽"),
+    KZT("₸"),
     
     /**
      * доллар США

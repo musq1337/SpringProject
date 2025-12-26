@@ -42,7 +42,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
-    private Currency defaultCurrency = Currency.RUB;
+    private Currency defaultCurrency = Currency.KZT;
     
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

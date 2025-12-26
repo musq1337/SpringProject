@@ -86,9 +86,58 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
            "WHERE t.user.id = :userId AND t.type = 'EXPENSE' " +
            "AND t.date BETWEEN :startDate AND :endDate " +
            "GROUP BY t.category.id")
-    List<Object[]> sumExpensesByCategoryAndDateBetween(
+    List<Object[]> sumExpensesByCategoryGrouped(
         @Param("userId") Long userId,
         @Param("startDate") LocalDate startDate,
         @Param("endDate") LocalDate endDate
+    );
+    
+    /**
+     * получить сумму расходов по категории за период
+     */
+    @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t " +
+           "WHERE t.category.id = :categoryId AND t.type = 'EXPENSE' " +
+           "AND t.date BETWEEN :startDate AND :endDate")
+    BigDecimal sumExpensesByCategoryAndDateBetween(
+        @Param("categoryId") Long categoryId,
+        @Param("startDate") LocalDate startDate,
+        @Param("endDate") LocalDate endDate
+    );
+    
+    /**
+     * подсчет количества транзакций по категории
+     */
+    long countByCategoryId(Long categoryId);
+    
+    /**
+     * получить расходы по категориям с группировкой
+     */
+    @Query("SELECT c.name, c.color, SUM(t.amount) FROM Transaction t " +
+           "JOIN t.category c WHERE t.user.id = :userId AND t.type = 'EXPENSE' " +
+           "AND t.date BETWEEN :startDate AND :endDate " +
+           "GROUP BY c.id, c.name, c.color ORDER BY SUM(t.amount) DESC")
+    List<Object[]> findExpensesByCategoryGrouped(
+        @Param("userId") Long userId,
+        @Param("startDate") LocalDate startDate,
+        @Param("endDate") LocalDate endDate
+    );
+    
+    /**
+     * найти транзакции с фильтрами
+     */
+    @Query("SELECT t FROM Transaction t WHERE t.user.id = :userId " +
+           "AND (:type IS NULL OR t.type = :type) " +
+           "AND (:categoryId IS NULL OR t.category.id = :categoryId) " +
+           "AND (:startDate IS NULL OR t.date >= :startDate) " +
+           "AND (:endDate IS NULL OR t.date <= :endDate) " +
+           "AND (:search IS NULL OR LOWER(t.description) LIKE LOWER(CONCAT('%', :search, '%')))")
+    Page<Transaction> findByFilters(
+        @Param("userId") Long userId,
+        @Param("type") TransactionType type,
+        @Param("categoryId") Long categoryId,
+        @Param("startDate") LocalDate startDate,
+        @Param("endDate") LocalDate endDate,
+        @Param("search") String search,
+        Pageable pageable
     );
 }

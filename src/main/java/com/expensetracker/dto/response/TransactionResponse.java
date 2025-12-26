@@ -22,11 +22,15 @@ public class TransactionResponse {
     
     private Long id;
     
+    private Long categoryId;
+    
+    private String categoryName;
+    
+    private String categoryColor;
+    
     private TransactionType type;
     
     private BigDecimal amount;
-    
-    private CategoryResponse category;
     
     private LocalDate date;
     

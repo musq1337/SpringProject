@@ -51,4 +51,9 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
         @Param("categoryId") Long categoryId,
         @Param("currentDate") LocalDate currentDate
     );
+    
+    /**
+     * проверка существования бюджета
+     */
+    boolean existsByUserIdAndCategoryIdAndStartDate(Long userId, Long categoryId, LocalDate startDate);
 }

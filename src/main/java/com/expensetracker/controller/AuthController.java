@@ -8,6 +8,8 @@ import com.expensetracker.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +20,11 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/api/v1/auth")
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @Tag(name = "Authentication", description = "endpoints для регистрации и входа")
 public class AuthController {
+    
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
     
     @Autowired
     private AuthService authService;
@@ -30,8 +35,16 @@ public class AuthController {
     @PostMapping("/register")
     @Operation(summary = "регистрация", description = "создание нового пользователя")
     public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
-        UserResponse response = authService.register(request);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        logger.info("Получен запрос на регистрацию: email={}, firstName={}, currency={}", 
+            request.getEmail(), request.getFirstName(), request.getDefaultCurrency());
+        try {
+            UserResponse response = authService.register(request);
+            logger.info("Пользователь успешно зарегистрирован: id={}", response.getId());
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        } catch (Exception e) {
+            logger.error("Ошибка при регистрации: ", e);
+            throw e;
+        }
     }
     
     /**

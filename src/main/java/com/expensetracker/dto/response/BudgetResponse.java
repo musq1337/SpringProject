@@ -21,9 +21,19 @@ public class BudgetResponse {
     
     private Long id;
     
-    private CategoryResponse category;
+    private Long categoryId;
+    
+    private String categoryName;
+    
+    private String categoryColor;
     
     private BigDecimal limitAmount;
+    
+    private BigDecimal spent;
+    
+    private BigDecimal remaining;
+    
+    private BigDecimal percentUsed;
     
     private BudgetPeriod period;
     
@@ -31,15 +41,9 @@ public class BudgetResponse {
     
     private LocalDate endDate;
     
-    private BigDecimal spent;
+    private Long daysLeft;
     
-    private BigDecimal remaining;
-    
-    private Double percentUsed;
-    
-    private String status;
-    
-    private Integer daysRemaining;
+    private Boolean isExceeded;
     
     private LocalDateTime createdAt;
 }

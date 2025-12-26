@@ -35,6 +35,11 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     boolean existsByUserIdAndName(Long userId, String name);
     
     /**
+     * проверить существование категории по имени и пользователю
+     */
+    boolean existsByNameAndUserId(String name, Long userId);
+    
+    /**
      * найти предустановленые категории пользователя
      */
     List<Category> findByUserIdAndIsDefaultTrue(Long userId);
