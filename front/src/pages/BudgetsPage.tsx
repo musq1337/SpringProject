@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus, Edit2, Trash2, X, TrendingUp, Calendar, AlertTriangle } from 'lucide-react';
 import { budgetService } from '../services/budget.service';
 import { categoryService } from '../services/category.service';
-import type { Budget, BudgetRequest, BudgetPeriod, Category, BudgetStatus } from '../types';
+import type { Budget, BudgetRequest, BudgetPeriod, Category } from '../types';
 import { formatCurrency } from '../utils/format';
 import { getCategoryColor } from '../utils/colors';
 
@@ -21,20 +21,6 @@ export default function BudgetsPage() {
     queryKey: ['categories'],
     queryFn: () => categoryService.getAll(),
   });
-
-  const { data: dashboardData } = useQuery({
-    queryKey: ['dashboard'],
-    queryFn: async () => {
-      const response = await fetch('http://localhost:8080/api/analytics/dashboard', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
-      });
-      return response.json();
-    },
-  });
-
-  const budgetStatuses = dashboardData?.budgetStatuses || [];
 
   const deleteMutation = useMutation({
     mutationFn: budgetService.delete,
@@ -59,8 +45,8 @@ export default function BudgetsPage() {
     setIsModalOpen(true);
   };
 
-  const getProgressPercentage = (spent: number, limit: number): number => {
-    return Math.min((spent / limit) * 100, 100);
+  const getProgressPercentage = (budget: Budget): number => {
+    return Math.min((budget.spent / budget.limitAmount) * 100, 100);
   };
 
   const getProgressColor = (percentage: number): string => {
@@ -69,18 +55,10 @@ export default function BudgetsPage() {
     return 'bg-green-600';
   };
 
-  const getBudgetStatus = (budgetId: number): 'ok' | 'warning' | 'exceeded' => {
-    const status = budgetStatuses.find((bs: BudgetStatus) => bs.budget.id === budgetId);
-    if (!status) return 'ok';
-    const percentage = status.percentageUsed;
-    if (percentage >= 100) return 'exceeded';
-    if (percentage >= 80) return 'warning';
+  const getBudgetStatus = (budget: Budget): 'ok' | 'warning' | 'exceeded' => {
+    if (budget.isExceeded) return 'exceeded';
+    if (budget.percentUsed >= 80) return 'warning';
     return 'ok';
-  };
-
-  const getBudgetSpent = (budgetId: number): number => {
-    const status = budgetStatuses.find((bs: BudgetStatus) => bs.budget.id === budgetId);
-    return status?.spent || 0;
   };
 
   const getPeriodLabel = (period: BudgetPeriod): string => {
@@ -134,10 +112,9 @@ export default function BudgetsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {budgets.map((budget) => {
-            const status = getBudgetStatus(budget.id);
-            const currentSpent = getBudgetSpent(budget.id);
-            const percentage = getProgressPercentage(currentSpent, budget.limitAmount);
-            const categoryColor = getCategoryColor(budget.categoryName);
+            const status = getBudgetStatus(budget);
+            const percentage = getProgressPercentage(budget);
+            const categoryColor = budget.categoryColor || getCategoryColor(budget.categoryName);
 
             return (
               <div
@@ -210,7 +187,7 @@ export default function BudgetsPage() {
                   <div>
                     <p className="text-xs text-gray-500">Потрачено</p>
                     <p className="text-lg font-bold text-gray-900">
-                      {formatCurrency(currentSpent, 'KZT')}
+                      {formatCurrency(budget.spent, 'KZT')}
                     </p>
                   </div>
                   <div className="text-right">
@@ -239,7 +216,7 @@ export default function BudgetsPage() {
                           <span className="text-sm font-medium text-red-700">Превышен</span>
                         </div>
                         <span className="text-sm font-bold text-red-700">
-                          +{formatCurrency(currentSpent - budget.limitAmount, 'KZT')}
+                          +{formatCurrency(budget.spent - budget.limitAmount, 'KZT')}
                         </span>
                       </>
                     ) : (
@@ -250,7 +227,7 @@ export default function BudgetsPage() {
                             status === 'warning' ? 'text-yellow-700' : 'text-green-700'
                           }`}
                         >
-                          {formatCurrency(budget.limitAmount - currentSpent, 'KZT')}
+                          {formatCurrency(budget.remaining, 'KZT')}
                         </span>
                       </>
                     )}

@@ -111,13 +111,13 @@ public class TransactionController {
     }
 
     /**
-     * получить баланс за период
+     * получить баланс за период (если даты не указаны - за все время)
      */
     @GetMapping("/balance")
     @Operation(summary = "получить баланс за период")
     public ResponseEntity<Map<String, BigDecimal>> getBalance(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
     ) {
         BigDecimal balance = transactionService.getBalance(startDate, endDate);
         Map<String, BigDecimal> response = new HashMap<>();

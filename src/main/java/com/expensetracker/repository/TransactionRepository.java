@@ -105,6 +105,16 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     );
     
     /**
+     * посчитать общую сумму транзакций пользователя по типу за все время
+     */
+    @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t " +
+           "WHERE t.user.id = :userId AND t.type = :type")
+    BigDecimal sumByUserIdAndType(
+        @Param("userId") Long userId,
+        @Param("type") TransactionType type
+    );
+    
+    /**
      * подсчет количества транзакций по категории
      */
     long countByCategoryId(Long categoryId);

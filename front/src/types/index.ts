@@ -93,11 +93,16 @@ export interface Budget {
   id: number;
   categoryId: number;
   categoryName: string;
+  categoryColor?: string;
   limitAmount: number;
+  spent: number;
+  remaining: number;
+  percentUsed: number;
   period: BudgetPeriod;
   startDate: string;
   endDate: string;
-  userId: number;
+  daysLeft: number;
+  isExceeded: boolean;
   createdAt: string;
 }
 

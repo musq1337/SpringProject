@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080/api';
+// В Docker используем относительный путь (nginx проксирует /api на backend)
+// Локально используем полный URL
+const API_BASE_URL = import.meta.env.PROD ? '/api' : 'http://localhost:8080/api';
 
 export const api = axios.create({
   baseURL: API_BASE_URL,

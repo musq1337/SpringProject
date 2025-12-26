@@ -178,10 +178,30 @@ public class TransactionService {
     }
 
     /**
-     * получить баланс за период
+     * получить баланс за период (если даты null - за все время)
      */
     @Transactional(readOnly = true)
     public BigDecimal getBalance(LocalDate startDate, LocalDate endDate) {
+        User currentUser = getCurrentUser();
+        
+        // если даты не указаны - считаем баланс за все время
+        if (startDate == null || endDate == null) {
+            BigDecimal totalIncome = transactionRepository.sumByUserIdAndType(
+                currentUser.getId(), 
+                TransactionType.INCOME
+            );
+            BigDecimal totalExpense = transactionRepository.sumByUserIdAndType(
+                currentUser.getId(), 
+                TransactionType.EXPENSE
+            );
+            
+            totalIncome = totalIncome != null ? totalIncome : BigDecimal.ZERO;
+            totalExpense = totalExpense != null ? totalExpense : BigDecimal.ZERO;
+            
+            return totalIncome.subtract(totalExpense);
+        }
+        
+        // иначе за указанный период
         BigDecimal income = getTotalByType(TransactionType.INCOME, startDate, endDate);
         BigDecimal expense = getTotalByType(TransactionType.EXPENSE, startDate, endDate);
         return income.subtract(expense);

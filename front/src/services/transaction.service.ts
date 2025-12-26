@@ -42,7 +42,7 @@ export const transactionService = {
   },
 
   getBalance: async (): Promise<number> => {
-    const response = await api.get<number>('/transactions/balance');
-    return response.data;
+    const response = await api.get<{ balance: number }>('/transactions/balance');
+    return response.data.balance;
   },
 };
