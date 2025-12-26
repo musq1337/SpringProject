@@ -20,7 +20,9 @@ export const useAuthStore = create<AuthState>((set) => ({
   login: (accessToken, refreshToken) => {
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
-    set({ isAuthenticated: true });
+    set({ isAuthenticated: true, user: null });
+    // Перезагружаем страницу для гарантии обновления
+    window.location.href = '/';
   },
   
   logout: () => {

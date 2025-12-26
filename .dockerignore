@@ -1,0 +1,10 @@
+target
+.git
+.gitignore
+README.md
+.env
+.vscode
+*.md
+front/node_modules
+front/dist
+data

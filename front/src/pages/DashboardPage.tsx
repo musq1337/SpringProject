@@ -13,6 +13,16 @@ export default function DashboardPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const queryClient = useQueryClient();
 
+  // ALL hooks must be declared BEFORE any conditional returns
+  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm<TransactionRequest>({
+    defaultValues: {
+      date: new Date().toISOString().split('T')[0],
+      type: 'EXPENSE',
+    }
+  });
+
+  const transactionType = watch('type');
+
   const { data: dashboard, isLoading } = useQuery({
     queryKey: ['dashboard'],
     queryFn: () => analyticsService.getDashboard(),
@@ -32,30 +42,6 @@ export default function DashboardPage() {
     queryKey: ['categories'],
     queryFn: () => categoryService.getAll(),
   });
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-lg text-gray-600">Загрузка...</div>
-      </div>
-    );
-  }
-
-  const chartData = dashboard?.categoryExpenses?.map((item) => ({
-    name: item.categoryName,
-    value: item.totalAmount,
-  })) || [];
-
-  const COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#10b981'];
-
-  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm<TransactionRequest>({
-    defaultValues: {
-      date: new Date().toISOString().split('T')[0],
-      type: 'EXPENSE',
-    }
-  });
-
-  const transactionType = watch('type');
 
   const createMutation = useMutation({
     mutationFn: transactionService.create,
@@ -77,6 +63,26 @@ export default function DashboardPage() {
     },
   });
 
+  // NOW it's safe to do conditional returns
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-lg text-gray-600">Загрузка...</div>
+      </div>
+    );
+  }
+
+  console.log('Dashboard data:', { dashboard, balance, transactions, categories });
+
+  const chartData = dashboard?.categoryExpenses?.map((item) => ({
+    name: item.categoryName,
+    value: item.totalAmount,
+  })) || [];
+
+  const COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#10b981'];
+
+  const filteredCategories = categories.filter(cat => cat.type === transactionType);
+
   const onSubmit = (data: TransactionRequest) => {
     createMutation.mutate({
       ...data,
@@ -84,8 +90,6 @@ export default function DashboardPage() {
       amount: Number(data.amount),
     });
   };
-
-  const filteredCategories = categories.filter(cat => cat.type === transactionType);
 
   return (
     <div className="space-y-6">
@@ -274,6 +278,19 @@ export default function DashboardPage() {
                       ? 'text-yellow-600'
                       : 'text-green-600'
                   }`}>
+                    {status.percentageUsed.toFixed(1)}% использовано
+                  </span>
+                  {status.isExceeded && (
+                    <span className="px-3 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded-full">
+                      Превышен!
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Add Transaction Modal */}
       {showAddModal && (
@@ -416,19 +433,6 @@ export default function DashboardPage() {
                 </button>
               </div>
             </form>
-          </div>
-        </div>
-      )}
-                    {status.percentageUsed.toFixed(1)}% использовано
-                  </span>
-                  {status.isExceeded && (
-                    <span className="px-3 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded-full">
-                      Превышен!
-                    </span>
-                  )}
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       )}

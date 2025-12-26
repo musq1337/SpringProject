@@ -5,6 +5,9 @@ import Layout from './components/Layout';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
+import TransactionsPage from './pages/TransactionsPage';
+import CategoriesPage from './pages/CategoriesPage';
+import BudgetsPage from './pages/BudgetsPage';
 import './App.css';
 
 const queryClient = new QueryClient({
@@ -38,7 +41,7 @@ function App() {
             element={
               <ProtectedRoute>
                 <Layout>
-                  <div className="text-2xl">Транзакции (в разработке)</div>
+                  <TransactionsPage />
                 </Layout>
               </ProtectedRoute>
             }
@@ -48,7 +51,7 @@ function App() {
             element={
               <ProtectedRoute>
                 <Layout>
-                  <div className="text-2xl">Категории (в разработке)</div>
+                  <CategoriesPage />
                 </Layout>
               </ProtectedRoute>
             }
@@ -58,7 +61,7 @@ function App() {
             element={
               <ProtectedRoute>
                 <Layout>
-                  <div className="text-2xl">Бюджеты (в разработке)</div>
+                  <BudgetsPage />
                 </Layout>
               </ProtectedRoute>
             }

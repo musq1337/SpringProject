@@ -16,7 +16,7 @@ import java.time.LocalDate;
  * контроллер для аналитики и dashboard
  */
 @RestController
-@RequestMapping("/api/v1/analytics")
+@RequestMapping("/api/analytics")
 @RequiredArgsConstructor
 @Tag(name = "Analytics", description = "аналитика и отчеты")
 @SecurityRequirement(name = "Bearer Authentication")

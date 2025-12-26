@@ -18,7 +18,7 @@ import java.util.List;
  * контроллер для работы с бюджетами
  */
 @RestController
-@RequestMapping("/api/v1/budgets")
+@RequestMapping("/api/budgets")
 @RequiredArgsConstructor
 @Tag(name = "Budgets", description = "управление бюджетами")
 @SecurityRequirement(name = "Bearer Authentication")

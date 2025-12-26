@@ -24,7 +24,7 @@ import java.util.Map;
  * контроллер для работы с транзакциями
  */
 @RestController
-@RequestMapping("/api/v1/transactions")
+@RequestMapping("/api/transactions")
 @RequiredArgsConstructor
 @Tag(name = "Transactions", description = "управление транзакциями")
 @SecurityRequirement(name = "Bearer Authentication")

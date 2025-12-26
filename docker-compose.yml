@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # Backend - Spring Boot API
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: expensetracker-backend
+    environment:
+      # База данных - используем H2 file-based для простоты
+      SPRING_DATASOURCE_URL: jdbc:h2:file:/data/expensetracker
+      SPRING_DATASOURCE_USERNAME: sa
+      SPRING_DATASOURCE_PASSWORD: 
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      # JWT секрет
+      JWT_SECRET: your-secret-key-change-in-production-minimum-256-bits
+      JWT_EXPIRATION: 86400000
+      JWT_REFRESH_EXPIRATION: 604800000
+    ports:
+      - "8080:8080"
+    volumes:
+      - backend_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend - React + Vite
+  frontend:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    container_name: expensetracker-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # PostgreSQL (закомментирован, используем H2)
+  # postgres:
+  #   image: postgres:16-alpine
+  #   container_name: expensetracker-db
+  #   environment:
+  #     POSTGRES_DB: expensetracker
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgres123
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   restart: unless-stopped
+
+volumes:
+  backend_data:
+    driver: local
+  # postgres_data:
+  #   driver: local

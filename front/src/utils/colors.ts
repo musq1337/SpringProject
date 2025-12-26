@@ -16,6 +16,14 @@ export const colors = {
   ],
 };
 
-export const getCategoryColor = (index: number): string => {
-  return colors.categoryColors[index % colors.categoryColors.length];
+export const getCategoryColor = (indexOrName: number | string): string => {
+  if (typeof indexOrName === 'string') {
+    // Hash string to get a consistent index
+    let hash = 0;
+    for (let i = 0; i < indexOrName.length; i++) {
+      hash = indexOrName.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return colors.categoryColors[Math.abs(hash) % colors.categoryColors.length];
+  }
+  return colors.categoryColors[indexOrName % colors.categoryColors.length];
 };

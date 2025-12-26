@@ -19,7 +19,7 @@ import java.util.List;
  * контроллер для работы с категориями
  */
 @RestController
-@RequestMapping("/api/v1/categories")
+@RequestMapping("/api/categories")
 @RequiredArgsConstructor
 @Tag(name = "Categories", description = "управление категориями")
 @SecurityRequirement(name = "Bearer Authentication")
